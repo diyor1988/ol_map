@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+  <title>Demo</title>
+
+  <!--open layer api-->
+  <link rel="stylesheet" href="assets/css/ol.css" type="text/css" />
+
+  <!-- turf.js -->
+  <script src="assets/js/turf.min.js"></script>
+
+
+  <!-- Bootstrap CSS CDN -->
+  <link rel="stylesheet" href="assets/bootstrap-3.3.7-dist/css/bootstrap.min.css" />
+  <!-- Our Custom CSS -->
+  <link rel="stylesheet" href="assets/css/style23.css" />
+  <!-- Scrollbar Custom CSS -->
+  <link rel="stylesheet" href="assets/css/jquery.mCustomScrollbar.min.css" />
+
+  <!--open layer api-->
+
+  <script src="assets/js/polyfill.min.js"></script>
+  <script src="assets/js/ol.js"></script>
+
+  <!-- Font Awesome JS -->
+  <!--     <link  rel="stylesheet"  href="assets/css/font-awesome/css/font-awesome.min.css"/>
+ -->
+  <link rel="stylesheet" href="assets/css/font-awesome/css/font-awesome.css">
+
+
+  <!--   <link
+      rel="stylesheet"
+      href="assets/css/ol-ext.min.css"
+    />
+    <script
+      type="text/javascript"
+      src="assets/js/ol-ext.min.js"
+    ></script> -->
+
+
+
+  <!-- ol-ext -->
+  <link rel="stylesheet" href="ol-ext.css" />
+  <script type="text/javascript" src="ol-ext.js"></script>
+
+
+  <!-- <link
+      rel="stylesheet"
+      href="assets/css/ol-ext.min.css"
+    />
+    <script
+      type="text/javascript"
+      src="assets/js/ol-ext.min.js"
+    ></script> -->
+
+
+  <style type="text/css">
+    .ol-attribution {
+      display: none !important;
+    }
+
+    .map {
+      height: 480px;
+      overflow: scroll;
+    }
+
+    #content {
+      padding: 18px !important;
+    }
+
+    .navbar {
+      margin-bottom: 22px !important;
+    }
+
+    .ol-tooltip {
+    position: absolute;
+    background-color: white;
+    -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+    filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+    padding: 5px;
+    border-radius: 10px;
+    border: 1px solid #cccccc;
+    bottom: 17px;
+    left: -50px;
+    min-width: 100px;
+  }
+  .ol-tooltip:after, .ol-tooltip:before {
+    top: 100%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+  }
+  .ol-tooltip:after {
+    border-top-color: white;
+    border-width: 10px;
+    left: 48px;
+    margin-left: -10px;
+  }
+  .ol-tooltip:before {
+    border-top-color: #cccccc;
+    border-width: 11px;
+    left: 48px;
+    margin-left: -11px;
+  }
+   .ol-tooltip p {
+     margin-top: 0;
+     margin-bottom: 0;
+     font-size: 1em;
+     line-height: normal;
+   }
+
+  .pulse-alert {
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    width: 8px;
+    height: 8px;
+    color: red;
+    background-color: red;
+    border-radius: 50%;
+    animation: pulse 1s infinite ease-out;
+  }
+
+  @keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0px rgba(255, 0, 0, 0.9);
+    }
+
+    100% {
+        box-shadow: 0 0 0 15px rgba(255, 0, 0, 0);
+    }
+  }
+  </style>
+</head>
+
+<body>
+  <div class="wrapper">
+    <!-- Sidebar Holder -->
+    <nav id="sidebar">
+      <div class="sidebar-header">
+        <a href="index.html">
+        </a>
+        <!--<h3 class="logo-text">GLS Editor</h3>-->
+      </div>
+
+      <ul class="list-unstyled components">
+        <li>
+          <a href="#" id="upload-img" onclick="document.getElementById('geoJsonInput').click();">
+            <input id="geoJsonInput" name="input_json" type="file" style="display: none" />
+            <i class="fa fa-upload"></i> Upload Json File
+          </a>
+        </li>
+        <li>
+          <a href="#" id="upload-img" onclick="document.getElementById('fileInput').click();">
+            <input id="fileInput" name="input_file" type="file" style="display: none" />
+            <i class="fa fa-upload"></i> Upload Image
+          </a>
+        </li>
+        <li class="">
+          <a href="#" id="none-click">
+            <i class="fa fa-mouse-pointer"></i>
+            Pointer
+          </a>
+        </li>
+
+        <li>
+          <a href="#rotation" data-toggle="collapse" aria-expanded="false">
+            <i class="fa fa-undo"></i> Map Rotate</a>
+          <ul class="collapse list-unstyled" id="rotation">
+            <li>
+              <a href="#" id="rotate-left">
+                <i class="fa fa-undo"></i>
+                Rotate Left
+              </a>
+            </li>
+            <li>
+              <a href="#" id="rotate-right">
+                <i class="fa fa-repeat" aria-hidden="true"></i>
+                Rotate Right
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#LockUnlock" data-toggle="collapse" aria-expanded="false">
+            <i class="fa fa-lock"></i> Image Lock</a>
+          <ul class="collapse list-unstyled" id="LockUnlock">
+            <li>
+              <a id="lock">
+                <i class="fa fa-lock"></i>
+                lock screen
+              </a>
+            </li>
+            <li>
+              <a id="unlock">
+                <i class="fa fa-unlock"></i>
+                unlock screen
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <li>
+          <a href="#drawPolygons" data-toggle="collapse" aria-expanded="false">
+            | Line
+          </a>
+
+          <ul class="collapse list-unstyled" id="drawPolygons">
+            <li>
+              <a href="#" id="line-click"> | Line </a>
+            </li>
+            <li>
+              <a href="#" id="dotted-click"> | Hash Line </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#" id="rectangle-click">
+            <i class="fa fa-square-o" aria-hidden="true"></i>
+            Rectangle
+          </a>
+        </li>
+        <li>
+          <a href="#" id="star-click">
+            <i class="fa fa-star" aria-hidden="true"></i>
+            Star
+          </a>
+        </li>
+        <li>
+          <a href="#" id="circle-click">
+            <i class="fa fa-circle"></i>
+            Circle
+          </a>
+        </li>
+        <li>
+          <a href="#" id="polygon-click">
+            <i class="fa fa-square-o" aria-hidden="true"></i>
+            Polygon
+          </a>
+        </li>
+        <li>
+          <a href="#" id="translateFeature">
+            <i class="fa fa-arrows" aria-hidden="true"></i>
+            Move </a>
+        </li>
+        <li>
+          <a href="#" id="scaling">
+            <i class="fa fa-search-plus" aria-hidden="true"></i>
+            Scaling </a>
+        </li>
+
+        <!-- <li>
+            <a href="#">
+              <input
+                id="translateFeature"
+                type="checkbox"
+                onchange="setPropertie(this.id);"
+              />
+              <input
+                id="stretch"
+                type="checkbox"
+                style="display: none"
+                onchange="setPropertie(this.id);"
+                checked="checked"
+              />
+              <input
+                id="translate"
+                type="checkbox"
+                style="display: none"
+                onchange="setPropertie(this.id);"
+                checked="checked"
+              />
+              <input
+                id="scale"
+                type="checkbox"
+                style="display: none"
+                onchange="setPropertie(this.id);"
+                checked="checked"
+              />
+
+              <input
+                type="checkbox"
+                class="custom-control-input"
+                id="switch1"
+              />
+              <label class="custom-control-label" for="switch1"
+                >Move Polygons</label
+              >
+            </a>
+          </li> -->
+        <p style="color:white;text-align: center;
+    font-size: 18px;
+    font-weight: 300;">© 2021 PermAlert</p>
+      </ul>
+
+    </nav>
+    <div class="modal fade" id="scaleModel" role="dialog">
+      <div class="modal-dialog">
+      
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>          
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-sm-6">
+                <input class="form-control" type="number" placeholder="DISTANCE" value="" id="distance" />  
+              </div>
+              <div class="col-sm-6">
+                <select class="form-control" name="distUnit" id="distUnit">
+                  <option value="0">Feet</option>
+                  <option value="1">Meter</option>
+                </select>  
+              </div>
+                
+            </div>          
+          </div>
+          <div class="modal-footer" style="text-align: center;">
+            <button type="button" class="btn btn-default" data-dismiss="modal" id="displayScaling">OK</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    <!-- Page Content Holder -->
+    <div id="content">
+      <nav class="navbar navbar-default" id="side-nav-button">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <button type="button" id="sidebarCollapse" class="btn btn-info navbar-btn">
+              <i class="glyphicon glyphicon-align-left"></i>
+            </button>
+          </div>
+
+          <div class="" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+              <li>
+
+                <a href="#" id="btnDelete">Delete</a>
+
+              </li>
+
+              <li>
+                <a href="#" id="paintPolygons">
+                  <input type="color" id="colorPicker" value="#3665ad" />
+                  Edit
+                </a>
+              </li>
+              <li>&nbsp;&nbsp;&nbsp;</li>
+              <li>&nbsp;&nbsp;&nbsp;</li>
+
+              <li>
+                <a href="#" id="btnSave" class="navbar-save-button"><strong> Save </strong> </a>
+                <!-- <a href="#">Page</a> -->
+                <!-- <a
+                    id="export-jpg"
+                    class="btn"
+                    download="map.jpg"
+                    target="_new"
+                    onclick="printControl.print({ imageType: 'image/jpeg'})"
+                  >
+                    Export JPEG
+                  </a> -->
+                <!-- <a
+                    id="export-png"
+                    class="btn"
+                    download="map.png"
+                    target="_new"
+                    onclick="printControl.print({ imageType: 'image/png'})"
+                  >
+                    Export PNG
+                  </a>
+                  <a
+                    id="export-pdf"
+                    class="btn"
+                    download="map.pdf"
+                    data-margin="10"
+                    target="_new"
+                    onclick="printControl.print({ imageType: 'image/jpeg', pdf:true })"
+                  >
+                    Export PDF
+                  </a> -->
+              </li>
+              <li>
+                <a href="#"> <strong> Cancel </strong></a>
+              </li>
+              <li>
+                <a href="#" id="alertTest"> <strong> Alert </strong></a>
+              </li>
+              <li>
+                <!-- <div class="btn-group">
+                  <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    Select Zone &nbsp;&nbsp;&nbsp; <i class="fa fa-arrow-down"></i>
+
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu1">
+                    <li><a href="#" data-id="1" class="zone-item">Zone 1</a></li>
+                    <li><a href="#" data-id="2" class="zone-item">Zone 2</a></li>
+                    <li><a href="#" data-id="3" class="zone-item">Zone 3</a></li>
+                  </ul>
+                </div> -->
+                <div style="padding: 5px 10px">
+                  <div style="margin-bottom: 10px">
+                    <select id="zone_list" class="form-control">
+                      <option value="1">Zone 1</option>
+                      <option value="2">Zone 2</option>
+                      <option value="3">Zone 3</option>
+                    </select>
+                  </div>
+                  <button class="btn btn-primary" id="btn_add_zone">Add zone</button>
+                </div>
+              </li>
+              <li>
+                <!-- <div class="btn-group">
+                  <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    Select Cable &nbsp;&nbsp;&nbsp; <i class="fa fa-arrow-down"></i>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li><a href="#" data-id="1" class="cable-item">Cable 1</a></li>
+                    <li><a href="#" data-id="2" class="cable-item">Cable 2</a></li>
+                    <li><a href="#" data-id="3" class="cable-item">Cable 3</a></li>
+                  </ul>
+                </div> -->
+                <div style="padding: 5px 10px">
+                  <div style="margin-bottom: 10px">
+                    <select id="cable_list" class="form-control">
+                      <option value="5#400">Cable 1</option>
+                      <option value="10#400">Cable 2</option>
+                      <option value="15#900">Cable 3</option>
+                    </select>
+                  </div>
+                  <button class="btn btn-primary" id="btn_add_cable">Add cable</button>
+                </div>
+              </li>
+              <!-- <li><a href="#">Page</a></li> -->
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      <div>
+        <div id="map" class="map" style="border: 1px solid"></div>
+      </div>
+    </div>
+    <!-- Popup for Cable -->
+    <div id="tooltip" class="ol-tooltip">
+      <div id="tooltip-content"></div>
+    </div>
+     <div id="alert" class="ol-alert">
+      </div>
+  </div>
+
+  <!-- jQuery CDN -->
+  <script src="assets/js/jquery-1.12.0.min.js"></script>
+  <!-- Bootstrap Js CDN -->
+  <script src="assets/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+  <!-- jQuery Custom Scroller CDN -->
+  <script src="assets/js/jquery.mCustomScrollbar.concat.min.js"></script>
+
+
+
+  <script src="assets/js/script1.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $("#sidebar").mCustomScrollbar({
+        theme: "minimal",
+      });
+
+      $("#sidebarCollapse").on("click", function () {
+        $("#sidebar, #content").toggleClass("active");
+        $(".collapse.in").toggleClass("in");
+        $("a[aria-expanded=true]").attr("aria-expanded", "false");
+      });
+    });
+    
+  </script>
+</body>
+
+</html>
