@@ -149,6 +149,23 @@ function init(imgUrl, source) {
             imageExtent: extent,
         }),
     });
+    if(source != null) {
+        var features = source.getFeatures();
+        var uids = source.getUidIndex;
+
+        $.each( uids, function( key, value ) {
+            console.log( key + ": " + value );
+        });
+        
+        // uids.forEach(uid => {
+        //     console.log(uid.ol_uid)
+        // });
+
+        console.log('data source = ', source);
+        console.log('data features = ', features);
+        console.log('data uidIndex_ = ', uids);
+    }
+    
 
     var raster = new ol.layer.Tile({
         source: new ol.source.OSM(),
